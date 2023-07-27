@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import React from "react";
+import DropDown from "./ResuableComponents/DropDown";
 function App() {
+  // data user input
+  const list = [
+    { id: 1, label: "VietNam"},
+    { id: 2, label: "Japan"},
+    { id: 3, label: "USA"},
+    { id: 4, label: "China" },
+   
+   
+  ];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Dropdown reusable</h2>
+
+      {/* implemented API: value, multiple selection, placeholder, */}
+      
+      <DropDown values={list} isSearchable placeholder={"click to search here"}  />
     </div>
   );
 }

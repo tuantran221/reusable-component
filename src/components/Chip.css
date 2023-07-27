@@ -1,0 +1,26 @@
+.tag-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+.tag-wrapper-item{
+    background-color: #ddd;
+    padding: 2px 4px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    border-radius: 10px;
+}
+.dropdown-tag-close{
+    display: flex;
+    align-items: center;
+}
+    .dropdown-tag-close img{
+        width: 12px;
+        height: 10px;
+    
+    }
