@@ -3,11 +3,12 @@ import searchIcon from "../assets/icons8-search-50.png";
 import "./DropDown.css";
 import Chip from "../components/Chip";
 
-const Dropdown = ({ values, multiple, placeholder, isSearchable }) => {
+const Dropdown = ({ values, multiple, placeholder, isSearchable, defaultValue }) => {
   // manage state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState(multiple ? [] : null);
   const [searchValue, setSearchValue] = useState("");
+  console.log("selectedvalue ", selectedValues)
 
   // handle opendropdown in and outside
   const dropdownRef = useRef(null);
@@ -36,19 +37,20 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable }) => {
       searchRef.current.focus();
     }
   }, [isDropdownOpen]);
+  
   // ----------------------------- block action -----------------------
 
   // handle selected action
   const handleSelected = (value) => {
     if (multiple) {
-      if (selectedValues.includes(value)) {
-        removeOption(value);
+      if (selectedValues && selectedValues.includes(value)) {
+        removeValue(value);
       } else {
         setSelectedValues([...selectedValues, value]);
       }
     } else {
       setSelectedValues([value]);
-      // block need to fix
+
       if (selectedValues !== null && value.label === selectedValues[0].label) {
         setSelectedValues(null);
       }
@@ -56,13 +58,14 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable }) => {
   };
 
   // handle close tag item
-  const removeOption = (value) => {
+  const removeValue = (value) => {
     return setSelectedValues(selectedValues.filter((val) => val !== value));
   };
   const onTagRemove = (e, value) => {
     setSelectedValues(selectedValues.filter((val) => val !== value));
   };
-// handle seach action function
+
+// handle search action function
   const onSearch = (e) => {
     setSearchValue(e.target.value);
   };
@@ -74,6 +77,7 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable }) => {
       (val) =>
         val.label.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0
     );
+    
   };
   //  ------------------------------- block view input --------------------
 
@@ -86,7 +90,7 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable }) => {
         <Chip value={val.label} onClickClose={(e) => onTagRemove(e, val)} />
       ));
     }
-    return selectedValues[0].label;
+    return selectedValues[0].label ;
   };
 
   // --------------------- view -------------------------

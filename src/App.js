@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import DropDown from "./ResuableComponents/DropDown";
+import DropDown from "./ReusableComponents/DropDown";
 function App() {
   // data user input
   const list = [
@@ -16,9 +16,9 @@ function App() {
     <div className="App">
       <h2>Dropdown reusable</h2>
 
-      {/* implemented API: value, multiple selection, placeholder, */}
+      {/* implemented API: value, multiple selection, placeholder, close-tag-item*/}
       
-      <DropDown values={list} isSearchable placeholder={"click to search here"}  />
+      <DropDown values={list} isSearchable multiple placeholder={"click to search item"}  />
     </div>
   );
 }
