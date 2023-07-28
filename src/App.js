@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import DropDown from "./screen/DropDown";
+import DropDown from "./components/DropDown";
 function App() {
   // data user input
   const list = [

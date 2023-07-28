@@ -1,6 +1,6 @@
 import React from 'react'
 import closeIcon from "../assets/icons8-close-24.png"
-import "../style/Chip.css"
+import "../style/component_style/Chip.css"
 const Chip = ({value, onClickClose}) => {
   return (
     <div className='tag-wrapper'>
