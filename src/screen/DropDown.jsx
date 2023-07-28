@@ -1,23 +1,24 @@
 import React, { useState, useRef, useEffect } from "react";
 import searchIcon from "../assets/icons8-search-50.png";
-import "./DropDown.css";
+import "../style/DropDown.css";
 import Chip from "../components/Chip";
 
-const Dropdown = ({ values, multiple, placeholder, isSearchable, defaultValue }) => {
+const Dropdown = ({ values, multiple, isSearchable, defaultValue }) => {
   // manage state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState(multiple ? [] : null);
   const [searchValue, setSearchValue] = useState("");
-  console.log("selectedvalue ", selectedValues)
-
-  // handle opendropdown in and outside
+  console.log("isDropdownOpen ", isDropdownOpen)
   const dropdownRef = useRef(null);
   const searchRef = useRef();
+
+// ------------------------ block handle state function ---------------------------
 
   const handleOpenDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+ // handle opendropdown in and outside
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownOpen(false);
@@ -45,6 +46,7 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable, defaultValue })
     if (multiple) {
       if (selectedValues && selectedValues.includes(value)) {
         removeValue(value);
+        setIsDropdownOpen(true)
       } else {
         setSelectedValues([...selectedValues, value]);
       }
@@ -82,13 +84,13 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable, defaultValue })
   //  ------------------------------- block view input --------------------
 
   const inputDisplay = () => {
-    if (!selectedValues) {
-      return placeholder;
-    }
     if (multiple) {
       return selectedValues.map((val) => (
-        <Chip value={val.label} onClickClose={(e) => onTagRemove(e, val)} />
+        <Chip key={val.id} value={val.label} onClickClose={(e) => onTagRemove(e, val)} />
       ));
+    }
+    if (!selectedValues){
+      return null
     }
     return selectedValues[0].label ;
   };
@@ -105,7 +107,7 @@ const Dropdown = ({ values, multiple, placeholder, isSearchable, defaultValue })
           <div className="dropdown-list-wrapper">
             {isSearchable && (
               <div className="dropdown-search-wrapper">
-                <input  onChange={onSearch} value={searchValue} ref={searchRef}  />
+                <input  onChange={onSearch} value={searchValue} ref={searchRef} placeholder="enter to search here"  />
               </div>
             )}
             {getValueSearch().map((value) => (
