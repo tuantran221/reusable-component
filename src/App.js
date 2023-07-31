@@ -8,6 +8,8 @@ function App() {
     { id: 2, label: "Japan" },
     { id: 3, label: "USA" },
     { id: 4, label: "China" },
+    { id: 5, label: "Korea" },
+    { id: 6, label: "Laos" },
   ];
 
   return (
@@ -18,10 +20,15 @@ function App() {
         multiple
         placeholder={"click to search item"}
         isSearchable
-        initialValue
+        // singleDefault="VietNam"
+        multipleDefault={[
+          { id: 2, label: "Japan" },
+          { id: 3, label: "USA" },
+        ]}
       />
     </div>
   );
 }
 
 export default App;
+  

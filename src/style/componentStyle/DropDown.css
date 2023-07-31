@@ -25,6 +25,7 @@
   width: 90%;
   min-height: 25px;
   padding: 5px;
+  padding-left: 10px;
   font-size: 16px;
   margin-bottom: 10px;
   border-radius: 10px 0 0 10px;
@@ -33,6 +34,7 @@
   outline: none;
   display: flex;
   cursor: text;
+  align-items: center;
 
 }
 
@@ -43,7 +45,7 @@
   width: 400px;
   display: inline-block;
   list-style: none;
-  padding: 0;
+  padding: 5px;
   margin: 0;
   border-radius: 10px;
   background-color: #ffffff;
@@ -56,16 +58,18 @@
   padding: 10px 10px 10px 37px;
   cursor: pointer;
   display: flex;
-  width: 88.7%;
+  width: 88%;
 }
 
 .dropdown-list-item:hover {
   background-color: #f2f2f2;
+  border-radius: 7px;
 }
 
 .dropdown-list-item.selected {
   background-color: #e6e6e6;
   font-weight: bold;
+  border-radius: 7px;
 }
 
 .dropdown-search-wrapper{

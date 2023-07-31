@@ -6,7 +6,8 @@ const DropDownContainer = ({
   multiple,
   placeholder,
   isSearchable,
-  initialValue,
+  singleDefault,
+  multipleDefault,
 }) => {
   // manage state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,9 +15,9 @@ const DropDownContainer = ({
   const [searchValue, setSearchValue] = useState("");
   const dropdownRef = useRef(null);
   const searchRef = useRef();
-  console.log("select", !selectedValues)
-
+  console.log("multidefault", multipleDefault);
   // ----------------- handle function logic ----------------
+
   const handleOpenDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -41,6 +42,11 @@ const DropDownContainer = ({
     }
   }, [isDropdownOpen]);
 
+  useEffect(() => {
+    if (multipleDefault) {
+      setSelectedValues(multipleDefault);
+    }
+  }, [multipleDefault]);
   // handle selected action
   const handleSelected = (value) => {
     if (multiple) {
@@ -51,7 +57,6 @@ const DropDownContainer = ({
       }
     } else {
       setSelectedValues([value]);
-
       if (selectedValues !== null && value.label === selectedValues[0].label) {
         setSelectedValues(null);
       }
@@ -63,19 +68,28 @@ const DropDownContainer = ({
     return setSelectedValues(selectedValues.filter((val) => val !== value));
   };
 
-  // handle search action function
+  // handle search function
   const onSearch = (e) => {
     setSearchValue(e.target.value);
   };
 
   const getValueSearch = () => {
-    if (!searchValue) {
+    if (!searchValue && singleDefault === null && multipleDefault === null) {
       return values;
+    } else if (singleDefault != null && !searchValue) {
+      // var initial = initialValue;
+      return values.filter((val) => val.label !== singleDefault);
+    }
+    else if (multipleDefault != null && !searchValue){
+      console.log("multiple filter")
+      return values.filter((val) => !multipleDefault.some(defaultItem => defaultItem.label === val.label))
     }
     return values.filter(
       (val) => val.label.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0
     );
+    
   };
+
   // handle close tag item
   const onTagRemove = (e, value) => {
     return setSelectedValues(selectedValues.filter((val) => val !== value));
@@ -83,13 +97,14 @@ const DropDownContainer = ({
 
   // function display item in input
   const inputDisplay = () => {
-   
-    if (!selectedValues) {
-      console.log("init")
+    if (!selectedValues && singleDefault != null) {
+      return singleDefault;
+    } else if (!selectedValues && singleDefault === null) {
       return placeholder;
-    }
-    if (multiple) {
-      console.log("mul")
+
+    } 
+ 
+    else if (multiple) {
       return selectedValues.map((val) => (
         <Chip
           key={val.id}
@@ -98,8 +113,7 @@ const DropDownContainer = ({
         />
       ));
     }
-
-    return selectedValues[0].label;
+    return selectedValues && selectedValues[0].label;
   };
 
   return (
@@ -119,6 +133,5 @@ const DropDownContainer = ({
     />
   );
 };
-
 
 export default DropDownContainer;
