@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Dropdown from "../components/DropDown";
 import Chip from "../components/Chip";
+
 const DropDownContainer = ({
   values,
   multiple,
@@ -8,14 +9,19 @@ const DropDownContainer = ({
   isSearchable,
   singleDefault,
   multipleDefault,
+  isRequired,
 }) => {
   // manage state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState(multiple ? [] : null);
   const [searchValue, setSearchValue] = useState("");
+  const [filteredSearch, setFilteredSearch] = useState(values);
+  const [isValid, setIsValid] = useState(false);
   const dropdownRef = useRef(null);
   const searchRef = useRef();
-  console.log("multidefault", multipleDefault);
+
+  console.log("valid", isValid);
+  // console.log("filteredSearch", filteredSearch)
   // ----------------- handle function logic ----------------
 
   const handleOpenDropdown = () => {
@@ -47,14 +53,15 @@ const DropDownContainer = ({
       setSelectedValues(multipleDefault);
     }
   }, [multipleDefault]);
+
   // handle selected action
   const handleSelected = (value) => {
     if (multiple) {
-      if (selectedValues && selectedValues.includes(value)) {
-        removeValue(value);
-      } else {
-        setSelectedValues([...selectedValues, value]);
-      }
+      setSelectedValues((prevValues) =>
+        prevValues.some((val) => val.id === value.id)
+          ? prevValues.filter((val) => val.id !== value.id)
+          : [...prevValues, value]
+      );
     } else {
       setSelectedValues([value]);
       if (selectedValues !== null && value.label === selectedValues[0].label) {
@@ -62,49 +69,49 @@ const DropDownContainer = ({
       }
     }
   };
-
   // handle close tag item
   const removeValue = (value) => {
-    return setSelectedValues(selectedValues.filter((val) => val !== value));
+    setSelectedValues(selectedValues.filter((val) => val !== value));
   };
 
   // handle search function
   const onSearch = (e) => {
-    setSearchValue(e.target.value);
+    const searchValue = e.target.value.toLowerCase();
+    console.log("current", searchValue);
+    setSearchValue(searchValue);
+
+    // Filter the values based on the search input
+    const filtered = values.filter((val) =>
+      val.label.toLowerCase().includes(searchValue)
+    );
+    setFilteredSearch(filtered);
+    
+    // function handle validate search function
+    if (isRequired) {
+      setIsValid(filtered.map((val) => val.label.toLowerCase().includes(searchValue))[0]);
+      
+    }
   };
 
+
+
   const getValueSearch = () => {
-    if (!searchValue && singleDefault === null && multipleDefault === null) {
+    if (!searchValue) {
       return values;
-    } else if (singleDefault != null && !searchValue) {
-      // var initial = initialValue;
-      return values.filter((val) => val.label !== singleDefault);
     }
-    else if (multipleDefault != null && !searchValue){
-      console.log("multiple filter")
-      return values.filter((val) => !multipleDefault.some(defaultItem => defaultItem.label === val.label))
-    }
-    return values.filter(
-      (val) => val.label.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0
-    );
-    
+    return filteredSearch;
   };
 
   // handle close tag item
   const onTagRemove = (e, value) => {
-    return setSelectedValues(selectedValues.filter((val) => val !== value));
+    removeValue(value);
   };
 
   // function display item in input
   const inputDisplay = () => {
-    if (!selectedValues && singleDefault != null) {
-      return singleDefault;
-    } else if (!selectedValues && singleDefault === null) {
-      return placeholder;
-
-    } 
- 
-    else if (multiple) {
+    if (!selectedValues) {
+      return singleDefault || placeholder;
+    } else if (multiple) {
       return selectedValues.map((val) => (
         <Chip
           key={val.id}
@@ -113,7 +120,7 @@ const DropDownContainer = ({
         />
       ));
     }
-    return selectedValues && selectedValues[0].label;
+    return selectedValues[0].label;
   };
 
   return (
@@ -130,6 +137,7 @@ const DropDownContainer = ({
       searchRef={searchRef}
       selectedValues={selectedValues}
       handleSelected={handleSelected}
+      isValid={isValid}
     />
   );
 };

@@ -85,3 +85,13 @@
     padding-left: 10px;
 
   }
+
+.dropdown-list-validation{
+  display: flex;
+  padding-left: 40px;
+}
+
+.dropdown-list-validation span{
+  color: red;
+  font-size: 12px;
+}
