@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
-import Dropdown from "../components/DropDown";
-import Chip from "../components/Chip";
+import DropdownWrapper from "."
+import Chip from "./Chip";
 
-const DropDownContainer = ({
+const Dropdown = ({
   values,
   multiple,
   placeholder,
   isSearchable,
   singleDefault,
   multipleDefault,
-  isRequired,
+  isValidation,
 }) => {
-  // manage state
+  //#region
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState(multiple ? [] : null);
   const [searchValue, setSearchValue] = useState("");
@@ -20,10 +20,10 @@ const DropDownContainer = ({
   const dropdownRef = useRef(null);
   const searchRef = useRef();
 
-  console.log("valid", isValid);
-  // console.log("filteredSearch", filteredSearch)
-  // ----------------- handle function logic ----------------
+  console.log(singleDefault);
+  //#endregion
 
+  //#region
   const handleOpenDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -33,7 +33,9 @@ const DropDownContainer = ({
       setIsDropdownOpen(false);
     }
   };
+  //#endregion
 
+  //#region
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
@@ -47,67 +49,83 @@ const DropDownContainer = ({
       searchRef.current.focus();
     }
   }, [isDropdownOpen]);
+  //#endregion
 
+  //#region
   useEffect(() => {
     if (multipleDefault) {
       setSelectedValues(multipleDefault);
     }
   }, [multipleDefault]);
+//#endregion
 
-  // handle selected action
+  //#region 
+  useEffect(() => {
+    if (singleDefault) {
+      // eslint-disable-next-line array-callback-return
+      let id = values.filter((val) => {
+        if (val.label === singleDefault) {
+          return val.id;
+        }
+      });
+      setSelectedValues([id[0]]);
+    }
+  }, [singleDefault, values]);
+//#endregion
+
+  //#region
   const handleSelected = (value) => {
-    if (multiple) {
+    if (multiple || multipleDefault) {
       setSelectedValues((prevValues) =>
         prevValues.some((val) => val.id === value.id)
           ? prevValues.filter((val) => val.id !== value.id)
           : [...prevValues, value]
       );
-    } else {
+      
+    } 
+    else {
       setSelectedValues([value]);
-      if (selectedValues !== null && value.label === selectedValues[0].label) {
+      if (selectedValues !== null && value.id === selectedValues[0].id) {
         setSelectedValues(null);
       }
     }
   };
-  // handle close tag item
+  //#endregion
+
+  //#region
   const removeValue = (value) => {
     setSelectedValues(selectedValues.filter((val) => val !== value));
   };
+  const onTagRemove = (e, value) => {
+    removeValue(value);
+  };
+  //#endregion
 
-  // handle search function
+  //#region
   const onSearch = (e) => {
     const searchValue = e.target.value.toLowerCase();
-    console.log("current", searchValue);
     setSearchValue(searchValue);
-
-    // Filter the values based on the search input
     const filtered = values.filter((val) =>
       val.label.toLowerCase().includes(searchValue)
     );
     setFilteredSearch(filtered);
-    
-    // function handle validate search function
-    if (isRequired) {
-      setIsValid(filtered.map((val) => val.label.toLowerCase().includes(searchValue))[0]);
-      
+    if (isValidation) {
+      setIsValid(
+        filtered.map((val) => val.label.toLowerCase().includes(searchValue))[0]
+      );
     }
   };
-
-
-
+  //#endregion
+  //#region
   const getValueSearch = () => {
     if (!searchValue) {
       return values;
     }
     return filteredSearch;
   };
+  //#endregion
 
-  // handle close tag item
-  const onTagRemove = (e, value) => {
-    removeValue(value);
-  };
-
-  // function display item in input
+  //#region
   const inputDisplay = () => {
     if (!selectedValues) {
       return singleDefault || placeholder;
@@ -119,12 +137,13 @@ const DropDownContainer = ({
           onClickClose={(e) => onTagRemove(e, val)}
         />
       ));
-    }
-    return selectedValues[0].label;
+    } 
+    return multipleDefault ? selectedValues.map((val) => val.label + " ") : selectedValues[0].label;
   };
+  //#endregion
 
   return (
-    <Dropdown
+    <DropdownWrapper
       isDropdownOpen={isDropdownOpen}
       handleOpenDropdown={handleOpenDropdown}
       inputDisplay={inputDisplay}
@@ -142,4 +161,4 @@ const DropDownContainer = ({
   );
 };
 
-export default DropDownContainer;
+export default Dropdown;
